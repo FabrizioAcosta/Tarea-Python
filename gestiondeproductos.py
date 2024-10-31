@@ -48,21 +48,34 @@ def ver_productos():
 
 def actualizar_producto():
     """Actualizar los detalles de un producto existente."""
-    nombre = input("Ingrese el nombre del producto a actualizar: ")
+    nombre_actual = input("Ingrese el nombre del producto a actualizar: ")
     for producto in productos:
-        if producto['nombre'] == nombre:
-            while True:
+        if producto['nombre'] == nombre_actual:
+            nuevo_nombre = input("Ingrese el nuevo nombre del producto (deje vacío para no cambiar): ")
+            nuevo_precio = input("Ingrese el nuevo precio (deje vacío para no cambiar): ")
+            nueva_cantidad = input("Ingrese la nueva cantidad (deje vacío para no cambiar): ")
+
+            # Actualiza el nombre si se proporciona uno nuevo
+            if nuevo_nombre:
+                producto['nombre'] = nuevo_nombre
+            
+            # Actualiza el precio si se proporciona uno nuevo
+            if nuevo_precio:
                 try:
-                    nuevo_precio = float(input("Ingrese el nuevo precio (deje vacío para no cambiar): ") or producto['precio'])
-                    nueva_cantidad = int(input("Ingrese la nueva cantidad (deje vacío para no cambiar): ") or producto['cantidad'])
-                    break
+                    producto['precio'] = float(nuevo_precio)
                 except ValueError:
-                    print("Por favor, ingrese valores numéricos válidos para precio y cantidad.")
-            producto['precio'] = nuevo_precio
-            producto['cantidad'] = nueva_cantidad
-            print(f"Producto '{nombre}' actualizado correctamente.")
+                    print("Valor de precio inválido. No se realizó ningún cambio.")
+
+            # Actualiza la cantidad si se proporciona una nueva
+            if nueva_cantidad:
+                try:
+                    producto['cantidad'] = int(nueva_cantidad)
+                except ValueError:
+                    print("Valor de cantidad inválido. No se realizó ningún cambio.")
+
+            print(f"Producto '{nombre_actual}' actualizado correctamente.")
             return
-    print(f"No se encontró el producto '{nombre}'.")
+    print(f"No se encontró el producto '{nombre_actual}'.")
 
 def eliminar_producto():
     """Eliminar un producto de la lista."""
@@ -102,4 +115,8 @@ def menu():
 
 if __name__ == "__main__":
     cargar_datos()
-    menu()
+    try:
+        menu()
+    finally:
+        guardar_datos()  # Asegura que los datos se guardan al salir
+
